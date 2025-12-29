@@ -63,6 +63,22 @@ app.use(express.static("public"));
 // Essential for authentication using HttpOnly cookies
 app.use(cookieParser());
 
+
+
+// routes import 
+
+import userRouter from './routes/user.route.js'
+
+/* ===========================
+   Routes declaration
+
+   =========================== */
+
+
+   app.use("/api/v1/users" , userRouter)
+
+
+
 /* ===========================
    EXPORT APP
    =========================== */

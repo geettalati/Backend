@@ -53,3 +53,5 @@ const uploadOnCloudinary = async (localfilepath) => {
         // returning null so calling function knows upload failed
     }
 }
+
+export {uploadOnCloudinary}

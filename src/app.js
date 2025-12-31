@@ -76,6 +76,8 @@ import userRouter from './routes/user.route.js'
 
 
    app.use("/api/v1/users" , userRouter)
+   console.log("USER ROUTER LOADED");
+
 
 
 

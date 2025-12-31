@@ -4,6 +4,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
+console.log("--- USER ROUTER INITIALIZED ---");
 
 router.route("/register").post(
     upload.fields([
@@ -13,7 +14,12 @@ router.route("/register").post(
     registeruser
 );
 
-router.route("/login").post(loginuser);
+// Added a debug log specifically for the login route hit
+router.route("/login").post((req, res, next) => {
+    console.log("DEBUG: Login route hit in user.route.js");
+    next();
+}, loginuser);
+
 router.route("/logout").post(verifyJWT, logoutuser);
 
 export default router;

@@ -90,26 +90,36 @@ const registeruser = asyncHandler(async (req, res) => {
 |--------------------------------------------------------------------------
 */
 const loginuser = asyncHandler(async (req, res) => {
+    console.log("STEP 1: Entered loginuser controller");
     const { username, email, password } = req.body;
+    console.log("STEP 2: Request body received:", { username, email, password: password ? "******" : "MISSING" });
 
     if ((!username && !email) || !password) {
+        console.log("ERROR: Missing credentials in request body");
         throw new ApiError(400, "Username or email and password are required");
     }
 
+    console.log("STEP 3: Searching for user in database...");
     const foundUser = await user.findOne({
         $or: [{ username }, { email }]
     });
 
     if (!foundUser) {
+        console.log("ERROR: User not found in database");
         throw new ApiError(404, "User does not exist");
     }
+    console.log("STEP 4: User found:", foundUser.username);
 
+    console.log("STEP 5: Validating password...");
     const isPasswordValid = await foundUser.isPasswordCorrect(password);
 
     if (!isPasswordValid) {
+        console.log("ERROR: Password validation failed");
         throw new ApiError(401, "Invalid credentials");
     }
+    console.log("STEP 6: Password is valid");
 
+    console.log("STEP 7: Generating tokens...");
     const { accessToken, refreshToken } =
         await generateAccessTokenAndRefreshToken(foundUser._id);
 
@@ -118,10 +128,12 @@ const loginuser = asyncHandler(async (req, res) => {
         secure: process.env.NODE_ENV === "production"
     };
 
+    console.log("STEP 8: Fetching safe user data for response...");
     const loggedInUser = await user
         .findById(foundUser._id)
         .select("-password -refreshToken");
 
+    console.log("STEP 9: Sending final 200 response");
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
